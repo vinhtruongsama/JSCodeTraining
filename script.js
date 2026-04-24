@@ -23,8 +23,9 @@ const LESSONS = {
 
 // --- CÁC PHẦN TỬ DOM ---
 const codeEditor = document.getElementById('code-editor');
+const highlightingCode = document.getElementById('highlighting-code');
+const highlightingContent = document.getElementById('highlighting-content');
 const consoleOutput = document.getElementById('console-output');
-const notesArea = document.getElementById('notes-area');
 const lessonContent = document.getElementById('lesson-content');
 
 // Buttons
@@ -36,47 +37,80 @@ const btnClearConsole = document.getElementById('btn-clear-console');
 
 // --- HÀM KHỞI TẠO ---
 function init() {
-    // 1. Load nội dung bài học
-    loadLesson('day1');
+    // 1. Load nội dung bài học từ localStorage
+    const savedLesson = localStorage.getItem('js_daily_lesson');
+    if (savedLesson) {
+        lessonContent.innerHTML = savedLesson;
+    }
 
-    // 2. Load code từ localStorage (nếu có)
+    // 2. Load code từ localStorage
     const savedCode = localStorage.getItem('js_daily_code');
     if (savedCode) {
         codeEditor.value = savedCode;
     } else {
-        codeEditor.value = LESSONS.day1.defaultCode;
+        codeEditor.value = "// Bắt đầu viết code tại đây...\n";
     }
 
-    // 3. Load ghi chú
-    const savedNotes = localStorage.getItem('js_daily_notes');
-    if (savedNotes) {
-        notesArea.value = savedNotes;
-    }
-
+    updateHighlighting();
     addSystemMessage("Sẵn sàng! Hãy viết code và bấm Run Code.");
 }
 
-function loadLesson(day) {
-    const lesson = LESSONS[day];
-    if (lesson) {
-        lessonContent.innerHTML = lesson.task;
-    }
+// --- HÀM SYNTAX HIGHLIGHTING (Vanilla JS) ---
+function updateHighlighting() {
+    let code = codeEditor.value;
+
+    // Thoát các ký tự HTML đặc biệt để tránh lỗi hiển thị
+    code = code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+    // Syntax Highlighting Regex
+    const rules = [
+        { regex: /(\/\/.+)/g, class: 'comment' }, // Comments
+        { regex: /(".*?"|'.*?'|`.*?`)/g, class: 'string' }, // Strings
+        { regex: /\b(let|const|var|function|return|if|else|for|while|import|export|class|new|this|await|async|try|catch|finally)\b/g, class: 'keyword' }, // Keywords
+        { regex: /\b(true|false|null|undefined)\b/g, class: 'boolean' }, // Booleans/Null
+        { regex: /\b(\d+)\b/g, class: 'number' }, // Numbers
+        { regex: /\b(console|log|warn|error|alert|document|window)\b/g, class: 'function' } // Functions/Objects
+    ];
+
+    let highlighted = code;
+    rules.forEach(rule => {
+        // Sử dụng một trick nhỏ để không thay thế các token đã được bọc span
+        // Nhưng ở mức độ đơn giản này, ta chạy tuần tự (cần cẩn thận thứ tự)
+    });
+
+    // Cách đơn giản và hiệu quả hơn cho demo này:
+    highlighted = code
+        .replace(/(\/\/.+)/g, '<span class="token comment">$1</span>')
+        .replace(/\b(let|const|var|function|return|if|else|for|while|new|this|await|async|try|catch)\b/g, '<span class="token keyword">$1</span>')
+        .replace(/\b(console|log|warn|error|alert|window|document)\b/g, '<span class="token function">$1</span>')
+        .replace(/\b(true|false|null|undefined)\b/g, '<span class="token boolean">$1</span>')
+        .replace(/\b(\d+)\b/g, '<span class="token number">$1</span>')
+        // Xử lý string cuối cùng để không bị keyword bên trong đè
+        .replace(/(".*?"|'.*?'|`.*?`)/g, '<span class="token string">$1</span>');
+
+    highlightingCode.innerHTML = highlighted + "\n"; // Thêm newline để đồng bộ cuộn
 }
+
+// Đồng bộ cuộn giữa textarea và lớp highlight
+codeEditor.addEventListener('scroll', () => {
+    highlightingContent.scrollTop = codeEditor.scrollTop;
+    highlightingContent.scrollLeft = codeEditor.scrollLeft;
+});
+
+// Cập nhật highlight khi gõ
+codeEditor.addEventListener('input', updateHighlighting);
 
 // --- HÀM XỬ LÝ CONSOLE ---
 function appendToConsole(content, type = 'log') {
     const line = document.createElement('div');
     line.className = `console-line ${type}`;
     
-    // Nếu content là object/array, chuyển sang string
     if (typeof content === 'object') {
         content = JSON.stringify(content, null, 2);
     }
     
     line.textContent = content;
     consoleOutput.appendChild(line);
-    
-    // Tự động cuộn xuống dưới cùng
     consoleOutput.scrollTop = consoleOutput.scrollHeight;
 }
 
@@ -92,17 +126,11 @@ function clearConsole() {
 // --- HÀM CHẠY CODE ---
 function runJS() {
     const code = codeEditor.value;
-    
-    // Dọn console trước khi chạy mới (tùy chọn)
-    // consoleOutput.innerHTML = ''; 
     addSystemMessage("--- Đang chạy code ---");
 
-    // Lưu tạm console.log gốc
     const originalLog = console.log;
     const originalError = console.error;
-    const originalWarn = console.warn;
 
-    // Ghi đè console để hiển thị lên giao diện
     console.log = (...args) => {
         const output = args.map(arg => 
             typeof arg === 'object' ? JSON.stringify(arg) : arg
@@ -116,66 +144,63 @@ function runJS() {
         originalError.apply(console, args);
     };
 
-    console.warn = (...args) => {
-        appendToConsole(args.join(' '), 'warn');
-        originalWarn.apply(console, args);
-    };
-
     try {
-        // Thực thi code người dùng
-        // Sử dụng Function thay vì eval để an toàn hơn một chút
         new Function(code)();
     } catch (err) {
         appendToConsole(`Lỗi: ${err.message}`, 'error');
     }
 
-    // Khôi phục lại console gốc sau khi chạy xong
     console.log = originalLog;
     console.error = originalError;
-    console.warn = originalWarn;
 }
 
 // --- EVENT LISTENERS ---
 
-// Chạy code
 btnRun.addEventListener('click', runJS);
 
-// Phím tắt Ctrl + Enter để chạy code
 codeEditor.addEventListener('keydown', (e) => {
-    if (e.ctrlKey && e.key === 'Enter') {
-        runJS();
+    if (e.ctrlKey && e.key === 'Enter') runJS();
+    
+    // Xử lý phím Tab
+    if (e.key === 'Tab') {
+        e.preventDefault();
+        const start = codeEditor.selectionStart;
+        const end = codeEditor.selectionEnd;
+        codeEditor.value = codeEditor.value.substring(0, start) + "    " + codeEditor.value.substring(end);
+        codeEditor.selectionStart = codeEditor.selectionEnd = start + 4;
+        updateHighlighting();
     }
 });
 
-// Lưu code
 btnSave.addEventListener('click', () => {
     localStorage.setItem('js_daily_code', codeEditor.value);
-    localStorage.setItem('js_daily_notes', notesArea.value);
-    alert('Đã lưu code và ghi chú thành công!');
+    localStorage.setItem('js_daily_lesson', lessonContent.innerHTML);
+    alert('Đã lưu code và bài học thành công!');
 });
 
-// Reset về mặc định
 btnReset.addEventListener('click', () => {
-    if (confirm('Bạn có chắc muốn xóa code hiện tại và quay lại bài học mặc định không?')) {
-        codeEditor.value = LESSONS.day1.defaultCode;
+    if (confirm('Xóa hết dữ liệu và bắt đầu lại?')) {
+        codeEditor.value = "// Bắt đầu viết code tại đây...\n";
+        lessonContent.innerHTML = "<h3>Nhập đề bài tại đây...</h3><p>Bạn có thể tự viết nhiệm vụ cho mình mỗi ngày.</p>";
         localStorage.removeItem('js_daily_code');
-        addSystemMessage("Đã khôi phục bài học mặc định.");
+        localStorage.removeItem('js_daily_lesson');
+        updateHighlighting();
     }
 });
 
-// Xóa trắng editor
 btnClearCode.addEventListener('click', () => {
     codeEditor.value = '';
-    addSystemMessage("Editor đã trống.");
+    updateHighlighting();
 });
 
-// Xóa console
 btnClearConsole.addEventListener('click', clearConsole);
 
-// Lưu ghi chú tự động khi người dùng gõ
-notesArea.addEventListener('input', () => {
-    localStorage.setItem('js_daily_notes', notesArea.value);
+// Tự động lưu bài học khi thay đổi
+lessonContent.addEventListener('input', () => {
+    localStorage.setItem('js_daily_lesson', lessonContent.innerHTML);
 });
+
+init();
 
 // Khởi chạy app
 init();

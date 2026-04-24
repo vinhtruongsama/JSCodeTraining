@@ -106,22 +106,9 @@ h1 {
     gap: 1.5rem;
 }
 
-.lesson-box, .notes-box {
-    background: var(--bg-card);
-    border-radius: var(--radius-lg);
-    padding: 1.5rem;
-    box-shadow: var(--shadow);
-    display: flex;
-    flex-direction: column;
-}
-
 .lesson-box {
-    flex: 2;
-    overflow-y: auto;
-}
-
-.notes-box {
     flex: 1;
+    overflow-y: auto;
 }
 
 .section-title {
@@ -129,8 +116,11 @@ h1 {
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--text-muted);
-    margin-bottom: 1rem;
     font-weight: 700;
+}
+
+.lesson-content {
+    outline: none;
 }
 
 .lesson-content h3 {
@@ -162,16 +152,7 @@ code {
 }
 
 #notes-area {
-    flex: 1;
-    width: 100%;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    padding: 0.75rem;
-    font-family: inherit;
-    font-size: 0.9rem;
-    resize: none;
-    outline: none;
-    transition: border-color 0.2s;
+    display: none;
 }
 
 #notes-area:focus {
@@ -219,25 +200,56 @@ code {
     color: var(--text-muted);
 }
 
-/* Editor */
+/* Editor Multi-layer */
 .editor-wrapper {
     flex: 1;
     position: relative;
+    overflow: hidden;
 }
 
-#code-editor {
+#code-editor, #highlighting-content {
+    /* Shared properties for alignment */
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    border: none;
+    margin: 0;
     padding: 1.5rem;
     font-family: 'Fira Code', monospace;
     font-size: 1rem;
+    line-height: 1.5;
+    tab-size: 4;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    border: none;
+    overflow: auto;
+}
+
+#code-editor {
+    z-index: 1;
+    background: transparent;
+    color: transparent; /* Text is transparent so highlight layer shows through */
+    caret-color: var(--text-main); /* Keep cursor visible */
     resize: none;
     outline: none;
-    color: var(--text-main);
-    background: transparent;
-    tab-size: 4;
 }
+
+#highlighting-content {
+    z-index: 0;
+    pointer-events: none;
+    background: var(--bg-card);
+    color: var(--text-main);
+}
+
+/* Syntax Highlighting Colors */
+.token.keyword { color: hsl(250, 80%, 60%); font-weight: bold; }
+.token.string { color: hsl(150, 60%, 40%); }
+.token.number { color: hsl(30, 80%, 50%); }
+.token.comment { color: hsl(220, 10%, 60%); font-style: italic; }
+.token.function { color: hsl(200, 80%, 40%); }
+.token.operator { color: hsl(0, 0%, 40%); }
+.token.boolean { color: hsl(300, 70%, 50%); }
 
 /* Console */
 .console-body {
@@ -246,7 +258,8 @@ code {
     padding: 1rem;
     overflow-y: auto;
     font-family: 'Fira Code', monospace;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    line-height: 1.4;
 }
 
 .console-line {
