@@ -93,7 +93,6 @@ function addSystemMessage(msg) {
 
 function clearConsole() {
     consoleOutput.innerHTML = '';
-    addSystemMessage("Console đã được dọn dẹp.");
 }
 
 // --- HÀM CHẠY CODE ---
@@ -133,7 +132,7 @@ function runJS() {
         return;
     }
 
-    addSystemMessage("--- Đang chạy code ---");
+    // Bắt đầu viết code tại đây...
 
     const originalLog = console.log;
     const originalError = console.error;
