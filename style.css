@@ -1,0 +1,340 @@
+:root {
+    /* Color Palette */
+    --primary: hsl(250, 80%, 60%);
+    --primary-hover: hsl(250, 80%, 55%);
+    --success: hsl(150, 80%, 40%);
+    --success-hover: hsl(150, 80%, 35%);
+    --danger: hsl(0, 80%, 60%);
+    --bg-main: hsl(220, 20%, 97%);
+    --bg-card: hsl(0, 0%, 100%);
+    --bg-console: hsl(220, 25%, 10%);
+    --text-main: hsl(220, 20%, 20%);
+    --text-muted: hsl(220, 10%, 50%);
+    --text-console: hsl(150, 100%, 90%);
+    --border: hsl(220, 20%, 90%);
+    
+    /* Spacing & Radii */
+    --radius-lg: 16px;
+    --radius-md: 8px;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    --header-height: 80px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    line-height: 1.6;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Layout */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.app-header {
+    height: var(--header-height);
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+}
+
+.header-content {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo-icon {
+    background: var(--primary);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.2rem;
+}
+
+h1 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.subtitle {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.app-main {
+    flex: 1;
+    display: flex;
+    padding: 1.5rem;
+    gap: 1.5rem;
+    overflow: hidden;
+}
+
+/* Sidebar */
+.app-sidebar {
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.lesson-box, .notes-box {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+}
+
+.lesson-box {
+    flex: 2;
+    overflow-y: auto;
+}
+
+.notes-box {
+    flex: 1;
+}
+
+.section-title {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.lesson-content h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+    color: var(--primary);
+}
+
+.lesson-content p {
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.lesson-content ol {
+    padding-left: 1.2rem;
+}
+
+.lesson-content li {
+    margin-bottom: 0.4rem;
+    font-size: 0.95rem;
+}
+
+code {
+    background: hsl(220, 20%, 92%);
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.85rem;
+}
+
+#notes-area {
+    flex: 1;
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 0.75rem;
+    font-family: inherit;
+    font-size: 0.9rem;
+    resize: none;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+#notes-area:focus {
+    border-color: var(--primary);
+}
+
+/* Workspace (Editor + Console) */
+.workspace {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    overflow: hidden;
+}
+
+.editor-section, .console-section {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.editor-section {
+    flex: 3;
+}
+
+.console-section {
+    flex: 2;
+}
+
+.section-header {
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0,0,0,0.02);
+}
+
+.label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* Editor */
+.editor-wrapper {
+    flex: 1;
+    position: relative;
+}
+
+#code-editor {
+    width: 100%;
+    height: 100%;
+    border: none;
+    padding: 1.5rem;
+    font-family: 'Fira Code', monospace;
+    font-size: 1rem;
+    resize: none;
+    outline: none;
+    color: var(--text-main);
+    background: transparent;
+    tab-size: 4;
+}
+
+/* Console */
+.console-body {
+    flex: 1;
+    background: var(--bg-console);
+    padding: 1rem;
+    overflow-y: auto;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.9rem;
+}
+
+.console-line {
+    margin-bottom: 0.25rem;
+    word-break: break-all;
+    white-space: pre-wrap;
+}
+
+.console-line.system { color: #888; font-style: italic; }
+.console-line.log { color: var(--text-console); }
+.console-line.error { color: #ff6b6b; background: rgba(255, 107, 107, 0.1); padding: 2px 5px; border-radius: 4px; }
+.console-line.warn { color: #ffd93d; }
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+}
+
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+
+.btn-success { background: var(--success); color: white; }
+.btn-success:hover { background: var(--success-hover); transform: translateY(-1px); }
+
+.btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
+.btn-outline:hover { background: var(--bg-main); }
+
+.btn-icon {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    cursor: pointer;
+    font-weight: 500;
+    text-decoration: underline;
+}
+
+.btn-icon:hover { color: var(--text-main); }
+
+.header-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .app-main {
+        flex-direction: column;
+        overflow-y: auto;
+    }
+    .app-sidebar {
+        width: 100%;
+        height: auto;
+    }
+    .workspace {
+        height: 800px;
+    }
+    body {
+        overflow-y: auto;
+    }
+}

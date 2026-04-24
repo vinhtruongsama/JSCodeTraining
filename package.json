@@ -1,0 +1,12 @@
+{
+  "name": "js-daily-practice",
+  "version": "1.0.0",
+  "description": "Ứng dụng luyện tập JavaScript mỗi ngày",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx http-server -p 8080"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
