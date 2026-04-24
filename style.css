@@ -220,21 +220,23 @@ code {
     height: 100%;
     margin: 0;
     padding: 20px; 
-    font-family: 'Fira Code', monospace;
-    font-size: 15px;
-    line-height: 1.6;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 16px;
+    line-height: 1.5;
     tab-size: 4;
     white-space: pre-wrap;
     word-wrap: break-word;
     border: none;
     overflow: auto;
     
-    /* Cực kỳ quan trọng để con trỏ không bị lệch */
-    letter-spacing: normal;
-    font-variant-ligatures: none; /* Tắt ghép chữ (Ligatures) */
+    /* Khóa chặt độ rộng ký tự */
+    letter-spacing: 0px;
+    word-spacing: 0px;
+    font-weight: 400 !important; /* Luôn là chữ thường để không lệch */
+    font-variant-ligatures: none;
     text-rendering: optimizeSpeed;
-    -webkit-font-smoothing: antialiased;
-    font-feature-settings: "liga" 0; /* Tắt ligatures cho một số trình duyệt khác */
+    -webkit-font-smoothing: none; /* Tắt làm mượt để pixel trùng khít */
+    font-feature-settings: "liga" 0;
 }
 
 #code-editor {
@@ -266,11 +268,11 @@ code {
     background: none !important; /* Xóa nền cho tất cả các thẻ con (span token) */
 }
 
-/* Syntax Highlighting Colors */
-.token.keyword { color: hsl(250, 80%, 60%); font-weight: bold; }
+/* Syntax Highlighting Colors - KHÔNG DÙNG BOLD */
+.token.keyword { color: hsl(250, 80%, 60%); }
 .token.string { color: hsl(150, 60%, 40%); }
 .token.number { color: hsl(30, 80%, 50%); }
-.token.comment { color: hsl(220, 10%, 60%); font-style: italic; }
+.token.comment { color: hsl(220, 10%, 60%); }
 .token.function { color: hsl(200, 80%, 40%); }
 .token.operator { color: hsl(0, 0%, 40%); }
 .token.boolean { color: hsl(300, 70%, 50%); }
