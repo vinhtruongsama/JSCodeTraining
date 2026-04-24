@@ -55,40 +55,35 @@ function init() {
     addSystemMessage("Sẵn sàng! Hãy viết code và bấm Run Code.");
 }
 
-// --- HÀM SYNTAX HIGHLIGHTING (Vanilla JS) ---
+// --- HÀM SYNTAX HIGHLIGHTING (Cải tiến - Một lần chạy duy nhất) ---
 function updateHighlighting() {
     let code = codeEditor.value;
 
-    // Thoát các ký tự HTML đặc biệt để tránh lỗi hiển thị
+    // Thoát HTML
     code = code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-    // Syntax Highlighting Regex
-    const rules = [
-        { regex: /(\/\/.+)/g, class: 'comment' }, // Comments
-        { regex: /(".*?"|'.*?'|`.*?`)/g, class: 'string' }, // Strings
-        { regex: /\b(let|const|var|function|return|if|else|for|while|import|export|class|new|this|await|async|try|catch|finally)\b/g, class: 'keyword' }, // Keywords
-        { regex: /\b(true|false|null|undefined)\b/g, class: 'boolean' }, // Booleans/Null
-        { regex: /\b(\d+)\b/g, class: 'number' }, // Numbers
-        { regex: /\b(console|log|warn|error|alert|document|window)\b/g, class: 'function' } // Functions/Objects
-    ];
+    // Quy tắc Regex tổng hợp (Thứ tự ưu tiên cực kỳ quan trọng)
+    const combinedRegex = new RegExp(
+        '(\\/\\/.*)' +                                      // 1. Comment (//...)
+        '|("(?:\\\\.|[^"\\\\])*"|\'(?:\\\\.|[^\'\\\\])*\'|`(?:\\\\.|[^`\\\\])*`)' + // 2. Strings ("..", '..', `..`)
+        '|\\b(let|const|var|function|return|if|else|for|while|new|this|await|async|try|catch|finally|import|export|class|from)\\b' + // 3. Keywords
+        '|\\b(true|false|null|undefined)\\b' +               // 4. Booleans/Null
+        '|\\b(console|log|warn|error|alert|window|document|Math|JSON|Object|Array|Promise)\\b' + // 5. Built-ins
+        '|\\b(\\d+)\\b',                                    // 6. Numbers
+        'g'
+    );
 
-    let highlighted = code;
-    rules.forEach(rule => {
-        // Sử dụng một trick nhỏ để không thay thế các token đã được bọc span
-        // Nhưng ở mức độ đơn giản này, ta chạy tuần tự (cần cẩn thận thứ tự)
+    const highlighted = code.replace(combinedRegex, (match, p1, p2, p3, p4, p5, p6) => {
+        if (p1) return `<span class="token comment">${p1}</span>`;
+        if (p2) return `<span class="token string">${p2}</span>`;
+        if (p3) return `<span class="token keyword">${p3}</span>`;
+        if (p4) return `<span class="token boolean">${p4}</span>`;
+        if (p5) return `<span class="token function">${p5}</span>`;
+        if (p6) return `<span class="token number">${p6}</span>`;
+        return match;
     });
 
-    // Cách đơn giản và hiệu quả hơn cho demo này:
-    highlighted = code
-        .replace(/(\/\/.+)/g, '<span class="token comment">$1</span>')
-        .replace(/\b(let|const|var|function|return|if|else|for|while|new|this|await|async|try|catch)\b/g, '<span class="token keyword">$1</span>')
-        .replace(/\b(console|log|warn|error|alert|window|document)\b/g, '<span class="token function">$1</span>')
-        .replace(/\b(true|false|null|undefined)\b/g, '<span class="token boolean">$1</span>')
-        .replace(/\b(\d+)\b/g, '<span class="token number">$1</span>')
-        // Xử lý string cuối cùng để không bị keyword bên trong đè
-        .replace(/(".*?"|'.*?'|`.*?`)/g, '<span class="token string">$1</span>');
-
-    highlightingCode.innerHTML = highlighted + "\n"; // Thêm newline để đồng bộ cuộn
+    highlightingCode.innerHTML = highlighted + (code.endsWith('\n') ? ' ' : '\n');
 }
 
 // Đồng bộ cuộn giữa textarea và lớp highlight
