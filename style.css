@@ -256,20 +256,9 @@ code {
 #highlighting-content {
     z-index: 0;
     pointer-events: none;
-    background: none !important; /* Xóa hoàn toàn nền */
+    background: none !important;
     color: var(--text-main);
-}
-
-#highlighting-code {
-    font-family: inherit;
-    background: none !important; 
-    padding: 0 !important;
-    margin: 0 !important;
-    display: block;
-}
-
-#highlighting-code * {
-    background: none !important; /* Xóa nền cho tất cả các thẻ con (span token) */
+    overflow: hidden; /* Không cần thanh cuộn cho lớp này vì đã sync với textarea */
 }
 
 /* Syntax Highlighting Colors - KHÔNG DÙNG BOLD */

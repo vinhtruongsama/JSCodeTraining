@@ -23,7 +23,6 @@ const LESSONS = {
 
 // --- CÁC PHẦN TỬ DOM ---
 const codeEditor = document.getElementById('code-editor');
-const highlightingCode = document.getElementById('highlighting-code');
 const highlightingContent = document.getElementById('highlighting-content');
 const consoleOutput = document.getElementById('console-output');
 const lessonContent = document.getElementById('lesson-content');
@@ -85,7 +84,7 @@ function updateHighlighting() {
         return match;
     });
 
-    highlightingCode.innerHTML = highlighted + (code.endsWith('\n') ? ' ' : '\n');
+    highlightingContent.innerHTML = highlighted + (code.endsWith('\n') ? ' ' : '\n');
 }
 
 // Đồng bộ cuộn giữa textarea và lớp highlight
