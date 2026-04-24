@@ -25,7 +25,6 @@ const LESSONS = {
 const codeEditor = document.getElementById('code-editor');
 const highlightingContent = document.getElementById('highlighting-content');
 const consoleOutput = document.getElementById('console-output');
-const lessonContent = document.getElementById('lesson-content');
 
 // Buttons
 const btnRun = document.getElementById('btn-run');
@@ -36,12 +35,6 @@ const btnClearConsole = document.getElementById('btn-clear-console');
 
 // --- HÀM KHỞI TẠO ---
 function init() {
-    // 1. Load nội dung bài học từ localStorage
-    const savedLesson = localStorage.getItem('js_daily_lesson');
-    if (savedLesson) {
-        lessonContent.innerHTML = savedLesson;
-    }
-
     // 2. Load code từ localStorage
     const savedCode = localStorage.getItem('js_daily_code');
     if (savedCode) {
@@ -204,16 +197,13 @@ codeEditor.addEventListener('keydown', (e) => {
 
 btnSave.addEventListener('click', () => {
     localStorage.setItem('js_daily_code', codeEditor.value);
-    localStorage.setItem('js_daily_lesson', lessonContent.innerHTML);
-    alert('Đã lưu code và bài học thành công!');
+    alert('Đã lưu code thành công!');
 });
 
 btnReset.addEventListener('click', () => {
     if (confirm('Xóa hết dữ liệu và bắt đầu lại?')) {
         codeEditor.value = "";
-        lessonContent.innerHTML = "<h3>Hôm nay học gì?</h3><p>Nhấn vào đây để ghi nhiệm vụ...</p>";
         localStorage.removeItem('js_daily_code');
-        localStorage.removeItem('js_daily_lesson');
         updateHighlighting();
     }
 });
@@ -224,11 +214,6 @@ btnClearCode.addEventListener('click', () => {
 });
 
 btnClearConsole.addEventListener('click', clearConsole);
-
-// Tự động lưu bài học khi thay đổi
-lessonContent.addEventListener('input', () => {
-    localStorage.setItem('js_daily_lesson', lessonContent.innerHTML);
-});
 
 init();
 

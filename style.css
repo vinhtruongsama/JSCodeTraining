@@ -231,6 +231,8 @@ code {
     word-wrap: break-word;
     border: none !important;
     outline: none !important;
+    overflow-y: scroll !important; /* Luôn hiện thanh cuộn để khớp độ rộng */
+    overflow-x: hidden !important;
     
     /* Khóa chặt mọi biến số về hiển thị */
     letter-spacing: normal !important;
