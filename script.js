@@ -48,7 +48,7 @@ function init() {
     if (savedCode) {
         codeEditor.value = savedCode;
     } else {
-        codeEditor.value = "// Bắt đầu viết code tại đây...\n";
+        codeEditor.value = "";
     }
 
     updateHighlighting();

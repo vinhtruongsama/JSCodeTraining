@@ -244,12 +244,15 @@ code {
 #highlighting-content {
     z-index: 0;
     pointer-events: none;
-    background: var(--bg-card);
+    background: transparent; /* Đảm bảo không có nền xám */
     color: var(--text-main);
 }
 
 #highlighting-code {
     font-family: inherit;
+    background: transparent !important; /* Xóa bỏ nền mặc định của thẻ code */
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
 /* Syntax Highlighting Colors */
