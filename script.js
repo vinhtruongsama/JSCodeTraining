@@ -4,22 +4,7 @@
  */
 
 // --- CẤU HÌNH BÀI HỌC (Có thể thêm Day 2, Day 3... vào đây) ---
-const LESSONS = {
-    day1: {
-        title: "Day 1: Variables & console.log",
-        task: `
-            <h3>Day 1: Variables & console.log</h3>
-            <p>Nhiệm vụ:</p>
-            <ol>
-                <li>Tạo biến <code>name</code>, <code>age</code>, <code>country</code>.</li>
-                <li>In ra câu: "Tôi là ..., đến từ ..., năm nay ... tuổi".</li>
-                <li>Tạo biến <code>a = 5</code>, <code>b = 10</code> và in ra tổng, hiệu.</li>
-            </ol>
-        `,
-        defaultCode: `// Viết code của bạn ở đây...
-`
-    }
-};
+
 
 // --- CÁC PHẦN TỬ DOM ---
 const codeEditor = document.getElementById('code-editor');
@@ -44,7 +29,6 @@ function init() {
     }
 
     updateHighlighting();
-    addSystemMessage("Sẵn sàng! Hãy viết code và bấm Run Code.");
 }
 
 // --- HÀM SYNTAX HIGHLIGHTING (Cải tiến - Một lần chạy duy nhất) ---
@@ -132,9 +116,9 @@ function runJS() {
         );
 
         const endsCorrectly = (
-            trimmed.endsWith(';') || 
-            trimmed.endsWith('{') || 
-            trimmed.endsWith('}') || 
+            trimmed.endsWith(';') ||
+            trimmed.endsWith('{') ||
+            trimmed.endsWith('}') ||
             trimmed.endsWith(',')
         );
 
