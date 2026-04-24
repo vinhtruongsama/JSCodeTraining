@@ -244,15 +244,20 @@ code {
 #highlighting-content {
     z-index: 0;
     pointer-events: none;
-    background: transparent; /* Đảm bảo không có nền xám */
+    background: none !important; /* Xóa hoàn toàn nền */
     color: var(--text-main);
 }
 
 #highlighting-code {
     font-family: inherit;
-    background: transparent !important; /* Xóa bỏ nền mặc định của thẻ code */
+    background: none !important; 
     padding: 0 !important;
     margin: 0 !important;
+    display: block;
+}
+
+#highlighting-code * {
+    background: none !important; /* Xóa nền cho tất cả các thẻ con (span token) */
 }
 
 /* Syntax Highlighting Colors */

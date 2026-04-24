@@ -101,11 +101,11 @@ codeEditor.addEventListener('input', updateHighlighting);
 function appendToConsole(content, type = 'log') {
     const line = document.createElement('div');
     line.className = `console-line ${type}`;
-    
+
     if (typeof content === 'object') {
         content = JSON.stringify(content, null, 2);
     }
-    
+
     line.textContent = content;
     consoleOutput.appendChild(line);
     consoleOutput.scrollTop = consoleOutput.scrollHeight;
@@ -129,7 +129,7 @@ function runJS() {
     const originalError = console.error;
 
     console.log = (...args) => {
-        const output = args.map(arg => 
+        const output = args.map(arg =>
             typeof arg === 'object' ? JSON.stringify(arg) : arg
         ).join(' ');
         appendToConsole(output, 'log');
@@ -157,7 +157,7 @@ btnRun.addEventListener('click', runJS);
 
 codeEditor.addEventListener('keydown', (e) => {
     if (e.ctrlKey && e.key === 'Enter') runJS();
-    
+
     // Xử lý phím Tab
     if (e.key === 'Tab') {
         e.preventDefault();
@@ -177,8 +177,8 @@ btnSave.addEventListener('click', () => {
 
 btnReset.addEventListener('click', () => {
     if (confirm('Xóa hết dữ liệu và bắt đầu lại?')) {
-        codeEditor.value = "// Bắt đầu viết code tại đây...\n";
-        lessonContent.innerHTML = "<h3>Nhập đề bài tại đây...</h3><p>Bạn có thể tự viết nhiệm vụ cho mình mỗi ngày.</p>";
+        codeEditor.value = "";
+        lessonContent.innerHTML = "<h3>Hôm nay học gì?</h3><p>Nhấn vào đây để ghi nhiệm vụ...</p>";
         localStorage.removeItem('js_daily_code');
         localStorage.removeItem('js_daily_lesson');
         updateHighlighting();
