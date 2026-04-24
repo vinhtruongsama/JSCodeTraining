@@ -62,24 +62,26 @@ function updateHighlighting() {
     // Thoát HTML
     code = code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-    // Quy tắc Regex tổng hợp (Thứ tự ưu tiên cực kỳ quan trọng)
+    // Quy tắc Regex tổng hợp (Bổ sung dấu ngoặc và toán tử)
     const combinedRegex = new RegExp(
-        '(\\/\\/.*)' +                                      // 1. Comment (//...)
-        '|("(?:\\\\.|[^"\\\\])*"|\'(?:\\\\.|[^\'\\\\])*\'|`(?:\\\\.|[^`\\\\])*`)' + // 2. Strings ("..", '..', `..`)
+        '(\\/\\/.*)' +                                      // 1. Comment
+        '|("(?:\\\\.|[^"\\\\])*"|\'(?:\\\\.|[^\'\\\\])*\'|`(?:\\\\.|[^`\\\\])*`)' + // 2. Strings
         '|\\b(let|const|var|function|return|if|else|for|while|new|this|await|async|try|catch|finally|import|export|class|from)\\b' + // 3. Keywords
         '|\\b(true|false|null|undefined)\\b' +               // 4. Booleans/Null
         '|\\b(console|log|warn|error|alert|window|document|Math|JSON|Object|Array|Promise)\\b' + // 5. Built-ins
-        '|\\b(\\d+)\\b',                                    // 6. Numbers
+        '|([\\(\\)\\{\\}\\[\\]])' +                         // 6. Brackets (Dấu ngoặc)
+        '|(\\b\\d+\\b)',                                    // 7. Numbers
         'g'
     );
 
-    const highlighted = code.replace(combinedRegex, (match, p1, p2, p3, p4, p5, p6) => {
+    const highlighted = code.replace(combinedRegex, (match, p1, p2, p3, p4, p5, p6, p7) => {
         if (p1) return `<span class="token comment">${p1}</span>`;
         if (p2) return `<span class="token string">${p2}</span>`;
         if (p3) return `<span class="token keyword">${p3}</span>`;
         if (p4) return `<span class="token boolean">${p4}</span>`;
         if (p5) return `<span class="token function">${p5}</span>`;
-        if (p6) return `<span class="token number">${p6}</span>`;
+        if (p6) return `<span class="token operator">${p6}</span>`; // Màu cho dấu ngoặc
+        if (p7) return `<span class="token number">${p7}</span>`;
         return match;
     });
 
