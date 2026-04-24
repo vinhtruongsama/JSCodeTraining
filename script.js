@@ -123,6 +123,40 @@ function clearConsole() {
 // --- HÀM CHẠY CODE ---
 function runJS() {
     const code = codeEditor.value;
+    const lines = code.split('\n');
+    let hasError = false;
+
+    // Bộ kiểm tra dấu chấm phẩy nghiêm ngặt
+    lines.forEach((line, index) => {
+        const trimmed = line.trim();
+        // Bỏ qua dòng trống hoặc comment
+        if (!trimmed || trimmed.startsWith('//') || trimmed.startsWith('/*')) return;
+
+        // Các trường hợp bắt buộc phải có dấu ; (Khai báo, gán giá trị, gọi hàm)
+        const needsSemicolon = (
+            trimmed.match(/^(let|const|var|return)\b/) || // Khai báo biến/return
+            trimmed.includes('=') ||                      // Phép gán
+            trimmed.includes('(')                         // Gọi hàm (như console.log)
+        );
+
+        const endsCorrectly = (
+            trimmed.endsWith(';') || 
+            trimmed.endsWith('{') || 
+            trimmed.endsWith('}') || 
+            trimmed.endsWith(',')
+        );
+
+        if (needsSemicolon && !endsCorrectly) {
+            appendToConsole(`Lỗi: Thiếu dấu ';' ở dòng ${index + 1}: "${trimmed}"`, 'error');
+            hasError = true;
+        }
+    });
+
+    if (hasError) {
+        addSystemMessage("Dừng chạy: Hãy thêm dấu ';' vào các dòng lỗi để tiếp tục.");
+        return;
+    }
+
     addSystemMessage("--- Đang chạy code ---");
 
     const originalLog = console.log;
