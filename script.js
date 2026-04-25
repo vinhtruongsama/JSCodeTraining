@@ -176,60 +176,52 @@ function runJS() {
     }
 
     const code = codeEditor.value;
-    const lines = code.split('\n');
+    
+    // --- BƯỚC 1: KIỂM TRA LỖI CHUYÊN NGHIỆP VỚI JSHINT ---
+    const options = {
+        esversion: 11, // Hỗ trợ let, const, async/await...
+        asi: false,    // Yêu cầu dấu chấm phẩy (nếu bạn muốn rèn luyện)
+        undef: true,   // Cảnh báo biến chưa định nghĩa
+        browser: true, // Cho phép dùng console, window...
+        globals: { "console": true }
+    };
+
+    JSHINT(code, options);
+    const errors = JSHINT.errors;
     let hasError = false;
 
-    // Bộ kiểm tra dấu chấm phẩy nghiêm ngặt
-    lines.forEach((line, index) => {
-        const trimmed = line.trim();
-        // Bỏ qua dòng trống hoặc comment
-        if (!trimmed || trimmed.startsWith('//') || trimmed.startsWith('/*')) return;
-
-        // Các trường hợp bắt buộc phải có dấu ; (Khai báo, gán giá trị, gọi hàm)
-        const isControlFlow = trimmed.match(/^(if|for|while|switch|function)\b/);
-        const needsSemicolon = !isControlFlow && (
-            trimmed.match(/^(let|const|var|return)\b/) || // Khai báo biến/return
-            trimmed.includes('=') ||                      // Phép gán
-            trimmed.includes('(')                         // Gọi hàm
-        );
-
-        const endsCorrectly = (
-            trimmed.endsWith(';') ||
-            trimmed.endsWith('{') ||
-            trimmed.endsWith('}') ||
-            trimmed.endsWith(',')
-        );
-
-        if (needsSemicolon && !endsCorrectly) {
-            appendToConsole(`Lỗi: Thiếu dấu ';' ở dòng ${index + 1}: "${trimmed}"`, 'error');
-            hasError = true;
-        }
-
-        // Kiểm tra lỗi chính tả phổ biến
-        const typos = [
-            { wrong: /\blenght\b/g, right: 'length' },
-            { wrong: /\bconsolo\b/g, right: 'console' },
-            { wrong: /\bconcole\b/g, right: 'console' },
-            { wrong: /\bfuntion\b/g, right: 'function' },
-            { wrong: /\bfunciton\b/g, right: 'function' },
-            { wrong: /\bretun\b/g, right: 'return' },
-            { wrong: /\bdocumnet\b/g, right: 'document' }
-        ];
-
-        typos.forEach(typo => {
-            if (trimmed.match(typo.wrong)) {
-                appendToConsole(`Lỗi chính tả ở dòng ${index + 1}: Bạn viết là "${trimmed.match(typo.wrong)[0]}", có phải bạn muốn viết là "${typo.right}"?`, 'error');
+    if (errors.length > 0) {
+        errors.forEach(err => {
+            if (err) {
+                appendToConsole(`Dòng ${err.line}, Cột ${err.character}: ${err.reason}`, 'error');
                 hasError = true;
+            }
+        });
+    }
+
+    // --- BƯỚC 2: KIỂM TRA LỖI CHÍNH TẢ BỔ SUNG (Như length) ---
+    const typos = [
+        { wrong: /\blenght\b/g, right: 'length' },
+        { wrong: /\blegh\b/g, right: 'length' }, // Thêm trường hợp legh bạn vừa gặp
+        { wrong: /\bconsolo\b/g, right: 'console' },
+        { wrong: /\bretun\b/g, right: 'return' }
+    ];
+
+    code.split('\n').forEach((line, index) => {
+        typos.forEach(typo => {
+            if (line.match(typo.wrong)) {
+                appendToConsole(`Lỗi chính tả dòng ${index + 1}: "${line.match(typo.wrong)[0]}" -> có phải là "${typo.right}"?`, 'warn');
+                // Gợi ý thôi, không nhất thiết chặn chạy nếu JSHint không coi là lỗi nặng
             }
         });
     });
 
     if (hasError) {
-        addSystemMessage("Dừng chạy: Vui lòng sửa các lỗi trên để tiếp tục.");
+        addSystemMessage("Dừng chạy: Vui lòng sửa các lỗi kỹ thuật trên.");
         return;
     }
 
-    // Bắt đầu viết code tại đây...
+    // Bắt đầu chạy code...
 
     const originalLog = console.log;
     const originalError = console.error;
