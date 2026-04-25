@@ -222,6 +222,36 @@ function runJS() {
     }
 
     // Bắt đầu chạy code...
+    
+    // --- HÀM LÀM ĐẸP CODE (BEAUTIFY) ---
+function formatCode() {
+    const code = codeEditor.value;
+    if (!code.trim()) return;
+
+    const formatted = js_beautify(code, {
+        indent_size: 4,
+        indent_char: " ",
+        max_preserve_newlines: 2,
+        preserve_newlines: true,
+        keep_array_indentation: false,
+        break_chained_methods: false,
+        indent_scripts: "normal",
+        brace_style: "collapse",
+        space_before_conditional: true,
+        unescape_strings: false,
+        jslint_happy: false,
+        end_with_newline: false,
+        wrap_line_length: 0,
+        indent_inner_html: false,
+        comma_first: false,
+        e4x: false,
+        indent_empty_lines: false
+    });
+
+    codeEditor.value = formatted;
+    updateHighlighting();
+    addSystemMessage("✨ Đã tự động định dạng mã nguồn (Ctrl + Alt + M)");
+}
 
     const originalLog = console.log;
     const originalError = console.error;
@@ -254,7 +284,14 @@ function runJS() {
 btnRun.addEventListener('click', runJS);
 
 codeEditor.addEventListener('keydown', (e) => {
+    // Ctrl + Enter để chạy code
     if (e.ctrlKey && e.key === 'Enter') runJS();
+
+    // Ctrl + Alt + M để format code
+    if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'm') {
+        e.preventDefault();
+        formatCode();
+    }
 
     // Xử lý phím Tab
     if (e.key === 'Tab') {
