@@ -509,56 +509,71 @@ code {
 
 .layout-toggles {
     display: flex;
-    background: var(--bg-main);
-    padding: 4px;
-    border-radius: var(--radius-md);
+    background: rgba(0, 0, 0, 0.05);
+    padding: 3px;
+    border-radius: 10px;
     border: 1px solid var(--border);
-    margin-left: 0.5rem;
-    box-shadow: inset 0 1px 4px rgba(0,0,0,0.05);
+    margin-left: 0.75rem;
+}
+
+[data-theme="dark-blue"] .layout-toggles {
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .btn-icon-only {
-    width: 38px;
-    height: 38px;
+    width: 34px;
+    height: 34px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 6px;
-    border: 1px solid transparent;
+    border-radius: 8px;
+    border: none;
     background: transparent;
-    color: var(--text-main);
+    color: var(--text-muted);
     cursor: pointer;
-    transition: all 0.2s;
-    position: relative;
-    z-index: 5;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-icon-only:hover {
-    background: rgba(0, 0, 0, 0.05);
-    border-color: var(--border);
+    color: var(--text-main);
+    background: rgba(0, 0, 0, 0.03);
 }
 
 .btn-icon-only.active {
-    background: var(--bg-card);
-    color: var(--primary);
-    border-color: var(--border);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: var(--primary);
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 #btn-theme {
-    border: 1px solid var(--border);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
     background: var(--bg-card);
-    margin-right: 0.5rem;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
 }
 
 #btn-theme:hover {
-    background: var(--bg-main);
-    transform: translateY(-1px);
+    transform: rotate(15deg) scale(1.1);
+    border-color: var(--primary);
+    box-shadow: 0 0 15px rgba(var(--primary), 0.3);
+}
+
+[data-theme="dark-blue"] #btn-theme {
+    background: hsl(222, 47%, 20%);
+    color: #f1c40f; /* Gold for moon in dark mode */
 }
 
 /* Ensure SVGs inside icon-only buttons take full color */
 .btn-icon-only svg {
     pointer-events: none;
+    stroke-width: 2.5px; /* Thicker for better visibility */
 }
 
 /* Custom Scrollbar */
