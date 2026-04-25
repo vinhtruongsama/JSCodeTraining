@@ -170,6 +170,10 @@ function clearConsole() {
 
 // --- HÀM CHẠY CODE ---
 function runJS() {
+    // Thêm dòng ngăn cách nếu đã có nội dung trong console
+    if (consoleOutput.innerHTML !== "") {
+        addSystemMessage("------------------------------------");
+    }
 
     const code = codeEditor.value;
     const lines = code.split('\n');
