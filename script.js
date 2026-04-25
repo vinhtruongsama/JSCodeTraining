@@ -182,10 +182,11 @@ function runJS() {
         if (!trimmed || trimmed.startsWith('//') || trimmed.startsWith('/*')) return;
 
         // Các trường hợp bắt buộc phải có dấu ; (Khai báo, gán giá trị, gọi hàm)
-        const needsSemicolon = (
+        const isControlFlow = trimmed.match(/^(if|for|while|switch|function)\b/);
+        const needsSemicolon = !isControlFlow && (
             trimmed.match(/^(let|const|var|return)\b/) || // Khai báo biến/return
             trimmed.includes('=') ||                      // Phép gán
-            trimmed.includes('(')                         // Gọi hàm (như console.log)
+            trimmed.includes('(')                         // Gọi hàm
         );
 
         const endsCorrectly = (
