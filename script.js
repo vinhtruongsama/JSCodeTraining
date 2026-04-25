@@ -152,7 +152,7 @@ function runJS() {
     // Bộ kiểm tra dấu chấm phẩy nghiêm ngặt
     lines.forEach((line, index) => {
         const trimmed = line.trim();
-        appendToConsole(`Dòng ${index + 1}: ${trimmed}`, 'log');
+        // Bỏ qua dòng trống hoặc comment
         if (!trimmed || trimmed.startsWith('//') || trimmed.startsWith('/*')) return;
 
         // Các trường hợp bắt buộc phải có dấu ; (Khai báo, gán giá trị, gọi hàm)
