@@ -18,6 +18,14 @@ const btnReset = document.getElementById('btn-reset');
 const btnClearCode = document.getElementById('btn-clear-code');
 const btnClearConsole = document.getElementById('btn-clear-console');
 
+// Layout & Resizer
+const workspace = document.querySelector('.workspace');
+const resizer = document.getElementById('workspace-resizer');
+const editorSection = document.getElementById('editor-section');
+const consoleSection = document.getElementById('console-section');
+const btnLayoutVertical = document.getElementById('btn-layout-vertical');
+const btnLayoutHorizontal = document.getElementById('btn-layout-horizontal');
+
 // --- HÀM KHỞI TẠO ---
 function init() {
     // 2. Load code từ localStorage
@@ -28,7 +36,43 @@ function init() {
         codeEditor.value = "";
     }
 
+    // 3. Load Layout settings
+    const savedLayout = localStorage.getItem('js_daily_layout') || 'vertical';
+
+    if (savedLayout === 'horizontal') {
+        setLayout('horizontal');
+        const savedWidth = localStorage.getItem('js_daily_editor_width');
+        if (savedWidth) editorSection.style.width = savedWidth;
+    } else {
+        setLayout('vertical');
+        const savedHeight = localStorage.getItem('js_daily_editor_height');
+        if (savedHeight) editorSection.style.height = savedHeight;
+    }
+
     updateHighlighting();
+}
+
+function setLayout(mode) {
+    if (mode === 'horizontal') {
+        workspace.classList.add('layout-horizontal');
+        btnLayoutHorizontal.classList.add('active');
+        btnLayoutVertical.classList.remove('active');
+
+        // Reset sizes if switching (optional, but better for consistency)
+        editorSection.style.height = '';
+        const savedWidth = localStorage.getItem('js_daily_editor_width');
+        if (savedWidth) editorSection.style.width = savedWidth;
+    } else {
+        workspace.classList.remove('layout-horizontal');
+        btnLayoutVertical.classList.add('active');
+        btnLayoutHorizontal.classList.remove('active');
+
+        // Reset sizes if switching
+        editorSection.style.width = '';
+        const savedHeight = localStorage.getItem('js_daily_editor_height');
+        if (savedHeight) editorSection.style.height = savedHeight;
+    }
+    localStorage.setItem('js_daily_layout', mode);
 }
 
 // --- HÀM SYNTAX HIGHLIGHTING (Cải tiến - Một lần chạy duy nhất) ---
@@ -97,6 +141,10 @@ function clearConsole() {
 
 // --- HÀM CHẠY CODE ---
 function runJS() {
+    // Thêm dòng ngăn cách nếu đã có nội dung trong console
+    if (consoleOutput.innerHTML !== "") {
+        addSystemMessage("------------------------------------");
+    }
     const code = codeEditor.value;
     const lines = code.split('\n');
     let hasError = false;
@@ -104,7 +152,7 @@ function runJS() {
     // Bộ kiểm tra dấu chấm phẩy nghiêm ngặt
     lines.forEach((line, index) => {
         const trimmed = line.trim();
-        // Bỏ qua dòng trống hoặc comment
+        appendToConsole(`Dòng ${index + 1}: ${trimmed}`, 'log');
         if (!trimmed || trimmed.startsWith('//') || trimmed.startsWith('/*')) return;
 
         // Các trường hợp bắt buộc phải có dấu ; (Khai báo, gán giá trị, gọi hàm)
@@ -198,7 +246,54 @@ btnClearCode.addEventListener('click', () => {
 
 btnClearConsole.addEventListener('click', clearConsole);
 
+btnLayoutVertical.addEventListener('click', () => setLayout('vertical'));
+btnLayoutHorizontal.addEventListener('click', () => setLayout('horizontal'));
+
+// --- RESIZING LOGIC ---
+let isResizing = false;
+
+resizer.addEventListener('mousedown', (e) => {
+    isResizing = true;
+    document.body.style.cursor = workspace.classList.contains('layout-horizontal') ? 'col-resize' : 'row-resize';
+    workspace.style.userSelect = 'none'; // Prevent text selection while resizing
+});
+
+document.addEventListener('mousemove', (e) => {
+    if (!isResizing) return;
+
+    const isHorizontal = workspace.classList.contains('layout-horizontal');
+    const rect = workspace.getBoundingClientRect();
+
+    if (isHorizontal) {
+        const offset = e.clientX - rect.left;
+        const percentage = (offset / rect.width) * 100;
+
+        // Constrain between 20% and 80%
+        if (percentage > 20 && percentage < 80) {
+            const size = `${percentage}%`;
+            editorSection.style.width = size;
+            localStorage.setItem('js_daily_editor_width', size);
+        }
+    } else {
+        const offset = e.clientY - rect.top;
+        const percentage = (offset / rect.height) * 100;
+
+        // Constrain between 20% and 80%
+        if (percentage > 20 && percentage < 80) {
+            const size = `${percentage}%`;
+            editorSection.style.height = size;
+            localStorage.setItem('js_daily_editor_height', size);
+        }
+    }
+});
+
+document.addEventListener('mouseup', () => {
+    if (isResizing) {
+        isResizing = false;
+        document.body.style.cursor = '';
+        workspace.style.userSelect = '';
+    }
+});
+
 init();
 
-// Khởi chạy app
-init();

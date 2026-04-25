@@ -168,25 +168,88 @@ code {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 0; /* Remove gap to use resizer */
     overflow: hidden;
+    position: relative;
+}
+
+.workspace.layout-horizontal {
+    flex-direction: row;
 }
 
 .editor-section, .console-section {
     background: var(--bg-card);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow);
+    border-radius: 0; /* Removing radius inside workspace for cleaner look with resizer */
+    box-shadow: none;
     display: flex;
     flex-direction: column;
     overflow: hidden;
 }
 
-.editor-section {
-    flex: 3;
+.workspace:not(.layout-horizontal) .editor-section {
+    height: 60%; /* Initial height ratio */
+    flex: none;
 }
 
-.console-section {
-    flex: 2;
+.workspace:not(.layout-horizontal) .console-section {
+    flex: 1;
+}
+
+.workspace.layout-horizontal .editor-section {
+    width: 60%; /* Initial width ratio */
+    flex: none;
+    border-right: 1px solid var(--border);
+}
+
+.workspace.layout-horizontal .console-section {
+    flex: 1;
+}
+
+/* Resizer */
+.resizer {
+    background-color: var(--border);
+    position: relative;
+    z-index: 10;
+    transition: background-color 0.2s;
+}
+
+.resizer:hover {
+    background-color: var(--primary);
+}
+
+.workspace:not(.layout-horizontal) .resizer {
+    height: 8px;
+    cursor: row-resize;
+    width: 100%;
+}
+
+.workspace.layout-horizontal .resizer {
+    width: 8px;
+    cursor: col-resize;
+    height: 100%;
+}
+
+/* Add some shadow to the sections now that they are in a resizable container */
+.editor-section, .console-section {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    margin: 4px;
+}
+
+.workspace.layout-horizontal .editor-section {
+    margin-right: 0;
+}
+
+.workspace.layout-horizontal .console-section {
+    margin-left: 0;
+}
+
+.workspace:not(.layout-horizontal) .editor-section {
+    margin-bottom: 0;
+}
+
+.workspace:not(.layout-horizontal) .console-section {
+    margin-top: 0;
 }
 
 .section-header {
@@ -338,6 +401,40 @@ code {
     display: flex;
     align-items: center;
     gap: 1rem;
+}
+
+.layout-toggles {
+    display: flex;
+    background: var(--bg-main);
+    padding: 4px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    margin-left: 0.5rem;
+}
+
+.btn-icon-only {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-icon-only:hover {
+    background: rgba(0,0,0,0.05);
+    color: var(--text-main);
+}
+
+.btn-icon-only.active {
+    background: white;
+    color: var(--primary);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 /* Custom Scrollbar */
