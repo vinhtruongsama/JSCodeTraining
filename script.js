@@ -13,6 +13,7 @@ const consoleOutput = document.getElementById('console-output');
 
 // Buttons
 const btnRun = document.getElementById('btn-run');
+const btnFormat = document.getElementById('btn-format');
 const btnClearCode = document.getElementById('btn-clear-code');
 const btnClearConsole = document.getElementById('btn-clear-console');
 const btnTheme = document.getElementById('btn-theme');
@@ -308,6 +309,8 @@ btnClearCode.addEventListener('click', () => {
     codeEditor.value = '';
     updateHighlighting();
 });
+
+btnFormat.addEventListener('click', formatCode);
 
 btnClearConsole.addEventListener('click', clearConsole);
 
