@@ -204,10 +204,28 @@ function runJS() {
             appendToConsole(`Lỗi: Thiếu dấu ';' ở dòng ${index + 1}: "${trimmed}"`, 'error');
             hasError = true;
         }
+
+        // Kiểm tra lỗi chính tả phổ biến
+        const typos = [
+            { wrong: /\blenght\b/g, right: 'length' },
+            { wrong: /\bconsolo\b/g, right: 'console' },
+            { wrong: /\bconcole\b/g, right: 'console' },
+            { wrong: /\bfuntion\b/g, right: 'function' },
+            { wrong: /\bfunciton\b/g, right: 'function' },
+            { wrong: /\bretun\b/g, right: 'return' },
+            { wrong: /\bdocumnet\b/g, right: 'document' }
+        ];
+
+        typos.forEach(typo => {
+            if (trimmed.match(typo.wrong)) {
+                appendToConsole(`Lỗi chính tả ở dòng ${index + 1}: Bạn viết là "${trimmed.match(typo.wrong)[0]}", có phải bạn muốn viết là "${typo.right}"?`, 'error');
+                hasError = true;
+            }
+        });
     });
 
     if (hasError) {
-        addSystemMessage("Dừng chạy: Hãy thêm dấu ';' vào các dòng lỗi để tiếp tục.");
+        addSystemMessage("Dừng chạy: Vui lòng sửa các lỗi trên để tiếp tục.");
         return;
     }
 
