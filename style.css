@@ -13,7 +13,7 @@
     --text-console: hsl(150, 100%, 90%);
     --border: hsl(220, 20%, 90%);
     --header-bg: hsl(0, 0%, 100%);
-    
+
     /* Spacing & Radii */
     --radius-lg: 16px;
     --radius-md: 8px;
@@ -186,7 +186,8 @@ code {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 0; /* Remove gap to use resizer */
+    gap: 0;
+    /* Remove gap to use resizer */
     overflow: hidden;
     position: relative;
 }
@@ -195,9 +196,11 @@ code {
     flex-direction: row;
 }
 
-.editor-section, .console-section {
+.editor-section,
+.console-section {
     background: var(--bg-card);
-    border-radius: 0; /* Removing radius inside workspace for cleaner look with resizer */
+    border-radius: 0;
+    /* Removing radius inside workspace for cleaner look with resizer */
     box-shadow: none;
     display: flex;
     flex-direction: column;
@@ -205,7 +208,8 @@ code {
 }
 
 .workspace:not(.layout-horizontal) .editor-section {
-    height: 60%; /* Initial height ratio */
+    height: 60%;
+    /* Initial height ratio */
     flex: none;
 }
 
@@ -214,7 +218,8 @@ code {
 }
 
 .workspace.layout-horizontal .editor-section {
-    width: 60%; /* Initial width ratio */
+    width: 60%;
+    /* Initial width ratio */
     flex: none;
     border-right: 1px solid var(--border);
 }
@@ -248,7 +253,8 @@ code {
 }
 
 /* Add some shadow to the sections now that they are in a resizable container */
-.editor-section, .console-section {
+.editor-section,
+.console-section {
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     margin: 4px;
@@ -276,7 +282,7 @@ code {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: rgba(0,0,0,0.02);
+    background: rgba(0, 0, 0, 0.02);
 }
 
 .label {
@@ -292,7 +298,8 @@ code {
     overflow: hidden;
 }
 
-#code-editor, #highlighting-content {
+#code-editor,
+#highlighting-content {
     /* Cấu hình siêu đồng bộ để tránh lệch con trỏ */
     position: absolute;
     top: 0;
@@ -300,21 +307,23 @@ code {
     width: 100%;
     height: 100%;
     margin: 0;
-    padding: 20px !important; 
-    
+    padding: 20px !important;
+
     /* Dùng font monospace cơ bản nhất của hệ thống để đảm bảo độ rộng */
     font-family: 'Consolas', 'Monaco', 'Courier New', monospace !important;
     font-size: 16px !important;
-    line-height: 24px !important; /* Dùng px thay vì unitless để chính xác tuyệt đối */
-    
+    line-height: 24px !important;
+    /* Dùng px thay vì unitless để chính xác tuyệt đối */
+
     tab-size: 4;
     white-space: pre-wrap;
     word-wrap: break-word;
     border: none !important;
     outline: none !important;
-    overflow-y: scroll !important; /* Luôn hiện thanh cuộn để khớp độ rộng */
+    overflow-y: scroll !important;
+    /* Luôn hiện thanh cuộn để khớp độ rộng */
     overflow-x: hidden !important;
-    
+
     /* Khóa chặt mọi biến số về hiển thị */
     letter-spacing: normal !important;
     word-spacing: normal !important;
@@ -329,7 +338,8 @@ code {
 #code-editor {
     z-index: 1;
     background: transparent;
-    color: transparent; /* Hide text to show highlights */
+    color: transparent;
+    /* Hide text to show highlights */
     caret-color: var(--text-main);
     resize: none;
     outline: none;
@@ -341,22 +351,54 @@ code {
     pointer-events: none;
     background: none !important;
     color: var(--text-main);
-    overflow: hidden; /* Không cần thanh cuộn cho lớp này vì đã sync với textarea */
+    overflow: hidden;
+    /* Không cần thanh cuộn cho lớp này vì đã sync với textarea */
 }
 
 /* Syntax Highlighting Colors - KHÔNG DÙNG BOLD */
-.token.keyword { color: var(--primary); }
-.token.string { color: var(--success); }
-.token.number { color: hsl(30, 80%, 50%); }
-.token.comment { color: var(--text-muted); }
-.token.function { color: hsl(200, 80%, 40%); }
-.token.operator { color: var(--text-muted); }
-.token.boolean { color: hsl(300, 70%, 50%); }
+.token.keyword {
+    color: var(--primary);
+}
 
-[data-theme="dark-blue"] .token.number { color: hsl(40, 100%, 70%); }
-[data-theme="dark-blue"] .token.function { color: hsl(190, 90%, 70%); }
-[data-theme="dark-blue"] .token.operator { color: hsl(0, 0%, 80%); }
-[data-theme="dark-blue"] .token.boolean { color: hsl(300, 80%, 80%); }
+.token.string {
+    color: var(--success);
+}
+
+.token.number {
+    color: hsl(30, 80%, 50%);
+}
+
+.token.comment {
+    color: var(--text-muted);
+}
+
+.token.function {
+    color: hsl(200, 80%, 40%);
+}
+
+.token.operator {
+    color: var(--text-muted);
+}
+
+.token.boolean {
+    color: hsl(300, 70%, 50%);
+}
+
+[data-theme="dark-blue"] .token.number {
+    color: hsl(40, 100%, 70%);
+}
+
+[data-theme="dark-blue"] .token.function {
+    color: hsl(190, 90%, 70%);
+}
+
+[data-theme="dark-blue"] .token.operator {
+    color: hsl(0, 0%, 80%);
+}
+
+[data-theme="dark-blue"] .token.boolean {
+    color: hsl(300, 80%, 80%);
+}
 
 /* Console */
 .console-body {
@@ -375,10 +417,25 @@ code {
     white-space: pre-wrap;
 }
 
-.console-line.system { color: #888; font-style: italic; }
-.console-line.log { color: var(--text-console); }
-.console-line.error { color: #ff6b6b; background: rgba(255, 107, 107, 0.1); padding: 2px 5px; border-radius: 4px; }
-.console-line.warn { color: #ffd93d; }
+.console-line.system {
+    color: #888;
+    font-style: italic;
+}
+
+.console-line.log {
+    color: var(--text-console);
+}
+
+.console-line.error {
+    color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.1);
+    padding: 2px 5px;
+    border-radius: 4px;
+}
+
+.console-line.warn {
+    color: #ffd93d;
+}
 
 /* Buttons */
 .btn {
@@ -394,14 +451,35 @@ code {
     border: none;
 }
 
-.btn-primary { background: var(--primary); color: white; }
-.btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
 
-.btn-success { background: var(--success); color: white; }
-.btn-success:hover { background: var(--success-hover); transform: translateY(-1px); }
+.btn-primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+}
 
-.btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
-.btn-outline:hover { background: var(--bg-main); }
+.btn-success {
+    background: var(--success);
+    color: white;
+}
+
+.btn-success:hover {
+    background: var(--success-hover);
+    transform: translateY(-1px);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-main);
+}
+
+.btn-outline:hover {
+    background: var(--bg-main);
+}
 
 .btn-icon {
     background: transparent;
@@ -410,10 +488,13 @@ code {
     font-size: 0.8rem;
     cursor: pointer;
     font-weight: 500;
-    text-decoration: underline;
 }
 
-.btn-icon:hover { color: var(--text-main); }
+.btn-icon:hover {
+    color: var(--text-main);
+    font-weight: 700;
+    font-size: 0.85rem;
+}
 
 .header-actions {
     display: flex;
@@ -450,27 +531,30 @@ code {
 }
 
 .btn-icon-only:hover {
-    background: rgba(0,0,0,0.05);
+    background: rgba(0, 0, 0, 0.05);
     color: var(--text-main);
 }
 
 .btn-icon-only.active {
     background: white;
     color: var(--primary);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
     width: 8px;
 }
+
 ::-webkit-scrollbar-track {
     background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
     background: var(--border);
     border-radius: 10px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
     background: var(--text-muted);
 }
@@ -481,13 +565,16 @@ code {
         flex-direction: column;
         overflow-y: auto;
     }
+
     .app-sidebar {
         width: 100%;
         height: auto;
     }
+
     .workspace {
         height: 800px;
     }
+
     body {
         overflow-y: auto;
     }

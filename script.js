@@ -13,8 +13,6 @@ const consoleOutput = document.getElementById('console-output');
 
 // Buttons
 const btnRun = document.getElementById('btn-run');
-const btnSave = document.getElementById('btn-save');
-const btnReset = document.getElementById('btn-reset');
 const btnClearCode = document.getElementById('btn-clear-code');
 const btnClearConsole = document.getElementById('btn-clear-console');
 const btnTheme = document.getElementById('btn-theme');
@@ -170,10 +168,7 @@ function clearConsole() {
 
 // --- HÀM CHẠY CODE ---
 function runJS() {
-    // Thêm dòng ngăn cách nếu đã có nội dung trong console
-    if (consoleOutput.innerHTML !== "") {
-        addSystemMessage("------------------------------------");
-    }
+
     const code = codeEditor.value;
     const lines = code.split('\n');
     let hasError = false;
