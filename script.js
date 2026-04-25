@@ -229,7 +229,10 @@ function formatCode() {
     const code = codeEditor.value;
     if (!code.trim()) return;
 
-    const formatted = js_beautify(code, {
+    // Đảm bảo dùng đúng function từ thư viện js-beautify
+    const beautifyFunc = window.js_beautify || js_beautify;
+    
+    const formatted = beautifyFunc(code, {
         indent_size: 4,
         indent_char: " ",
         max_preserve_newlines: 2,
@@ -240,18 +243,24 @@ function formatCode() {
         brace_style: "collapse",
         space_before_conditional: true,
         unescape_strings: false,
-        jslint_happy: false,
-        end_with_newline: false,
-        wrap_line_length: 0,
-        indent_inner_html: false,
-        comma_first: false,
-        e4x: false,
-        indent_empty_lines: false
+        jslint_happy: true, // Thêm cái này để format chuẩn hơn
+        end_with_newline: false
     });
 
-    codeEditor.value = formatted;
-    updateHighlighting();
-    addSystemMessage("✨ Đã tự động định dạng mã nguồn (Ctrl + Alt + M)");
+    if (code !== formatted) {
+        codeEditor.value = formatted;
+        updateHighlighting();
+        addSystemMessage("✨ Code đã được sắp xếp lại.");
+        
+        // Hiệu ứng nháy nhẹ editor để báo hiệu
+        codeEditor.style.transition = 'background 0.2s';
+        codeEditor.style.background = 'rgba(255, 255, 255, 0.05)';
+        setTimeout(() => {
+            codeEditor.style.background = 'transparent';
+        }, 200);
+    } else {
+        addSystemMessage("ℹ️ Code đã ở trạng thái đẹp nhất rồi.");
+    }
 }
 
     const originalLog = console.log;
