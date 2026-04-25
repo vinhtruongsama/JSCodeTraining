@@ -223,45 +223,6 @@ function runJS() {
     }
 
     // Bắt đầu chạy code...
-    
-    // --- HÀM LÀM ĐẸP CODE (BEAUTIFY) ---
-function formatCode() {
-    const code = codeEditor.value;
-    if (!code.trim()) return;
-
-    // Đảm bảo dùng đúng function từ thư viện js-beautify
-    const beautifyFunc = window.js_beautify || js_beautify;
-    
-    const formatted = beautifyFunc(code, {
-        indent_size: 4,
-        indent_char: " ",
-        max_preserve_newlines: 2,
-        preserve_newlines: true,
-        keep_array_indentation: false,
-        break_chained_methods: false,
-        indent_scripts: "normal",
-        brace_style: "collapse",
-        space_before_conditional: true,
-        unescape_strings: false,
-        jslint_happy: true, // Thêm cái này để format chuẩn hơn
-        end_with_newline: false
-    });
-
-    if (code !== formatted) {
-        codeEditor.value = formatted;
-        updateHighlighting();
-        addSystemMessage("✨ Code đã được sắp xếp lại.");
-        
-        // Hiệu ứng nháy nhẹ editor để báo hiệu
-        codeEditor.style.transition = 'background 0.2s';
-        codeEditor.style.background = 'rgba(255, 255, 255, 0.05)';
-        setTimeout(() => {
-            codeEditor.style.background = 'transparent';
-        }, 200);
-    } else {
-        addSystemMessage("ℹ️ Code đã ở trạng thái đẹp nhất rồi.");
-    }
-}
 
     const originalLog = console.log;
     const originalError = console.error;
@@ -287,6 +248,45 @@ function formatCode() {
 
     console.log = originalLog;
     console.error = originalError;
+}
+
+// --- HÀM LÀM ĐẸP CODE (BEAUTIFY) ---
+function formatCode() {
+    const code = codeEditor.value;
+    if (!code.trim()) return;
+
+    // Đảm bảo dùng đúng function từ thư viện js-beautify
+    const beautifyFunc = window.js_beautify || js_beautify;
+    
+    const formatted = beautifyFunc(code, {
+        indent_size: 4,
+        indent_char: " ",
+        max_preserve_newlines: 2,
+        preserve_newlines: true,
+        keep_array_indentation: false,
+        break_chained_methods: false,
+        indent_scripts: "normal",
+        brace_style: "collapse",
+        space_before_conditional: true,
+        unescape_strings: false,
+        jslint_happy: true, 
+        end_with_newline: false
+    });
+
+    if (code !== formatted) {
+        codeEditor.value = formatted;
+        updateHighlighting();
+        addSystemMessage("✨ Code đã được sắp xếp lại.");
+        
+        // Hiệu ứng nháy nhẹ editor để báo hiệu
+        codeEditor.style.transition = 'background 0.2s';
+        codeEditor.style.background = 'rgba(255, 255, 255, 0.05)';
+        setTimeout(() => {
+            codeEditor.style.background = 'transparent';
+        }, 200);
+    } else {
+        addSystemMessage("ℹ️ Code đã ở trạng thái đẹp nhất rồi.");
+    }
 }
 
 // --- EVENT LISTENERS ---
