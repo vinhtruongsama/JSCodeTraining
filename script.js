@@ -180,30 +180,34 @@ function runJS() {
     
     // --- BƯỚC 1: KIỂM TRA LỖI CHUYÊN NGHIỆP VỚI JSHINT ---
     const options = {
-        esversion: 11, // Hỗ trợ let, const, async/await...
-        asi: false,    // Yêu cầu dấu chấm phẩy (nếu bạn muốn rèn luyện)
-        undef: true,   // Cảnh báo biến chưa định nghĩa
-        browser: true, // Cho phép dùng console, window...
+        esversion: 11,
+        asi: true,     // Cho phép chạy dù thiếu dấu ; (IDE sẽ coi đây là phong cách, không phải lỗi chết người)
+        undef: true,
+        browser: true,
         globals: { "console": true }
     };
 
     JSHINT(code, options);
     const errors = JSHINT.errors;
-    let hasError = false;
+    let hasCriticalError = false;
 
     if (errors.length > 0) {
         errors.forEach(err => {
             if (err) {
-                appendToConsole(`Dòng ${err.line}, Cột ${err.character}: ${err.reason}`, 'error');
-                hasError = true;
+                const isWarning = err.code && err.code.startsWith('W'); // W là mã cảnh báo trong JSHint
+                const type = isWarning ? 'warn' : 'error';
+                
+                if (!isWarning) hasCriticalError = true;
+                
+                appendToConsole(`${isWarning ? '⚠️ Cảnh báo' : '❌ Lỗi'} [Dòng ${err.line}, Cột ${err.character}]: ${err.reason}`, type);
             }
         });
     }
 
-    // --- BƯỚC 2: KIỂM TRA LỖI CHÍNH TẢ BỔ SUNG (Như length) ---
+    // --- BƯỚC 2: KIỂM TRA LỖI CHÍNH TẢ BỔ SUNG ---
     const typos = [
         { wrong: /\blenght\b/g, right: 'length' },
-        { wrong: /\blegh\b/g, right: 'length' }, // Thêm trường hợp legh bạn vừa gặp
+        { wrong: /\blegh\b/g, right: 'length' },
         { wrong: /\bconsolo\b/g, right: 'console' },
         { wrong: /\bretun\b/g, right: 'return' }
     ];
@@ -211,14 +215,13 @@ function runJS() {
     code.split('\n').forEach((line, index) => {
         typos.forEach(typo => {
             if (line.match(typo.wrong)) {
-                appendToConsole(`Lỗi chính tả dòng ${index + 1}: "${line.match(typo.wrong)[0]}" -> có phải là "${typo.right}"?`, 'warn');
-                // Gợi ý thôi, không nhất thiết chặn chạy nếu JSHint không coi là lỗi nặng
+                appendToConsole(`💡 Gợi ý dòng ${index + 1}: Có vẻ bạn viết nhầm "${line.match(typo.wrong)[0]}" -> hãy sửa thành "${typo.right}"`, 'warn');
             }
         });
     });
 
-    if (hasError) {
-        addSystemMessage("Dừng chạy: Vui lòng sửa các lỗi kỹ thuật trên.");
+    if (hasCriticalError) {
+        addSystemMessage("🛑 Dừng chạy: Mã nguồn có lỗi cú pháp nghiêm trọng. Hãy sửa để tiếp tục.");
         return;
     }
 
@@ -250,42 +253,39 @@ function runJS() {
     console.error = originalError;
 }
 
-// --- HÀM LÀM ĐẸP CODE (BEAUTIFY) ---
+// --- HÀM LÀM ĐẸP CODE (SỬ DỤNG PRETTIER CHUYÊN NGHIỆP) ---
 function formatCode() {
     const code = codeEditor.value;
     if (!code.trim()) return;
 
-    // Đảm bảo dùng đúng function từ thư viện js-beautify
-    const beautifyFunc = window.js_beautify || js_beautify;
-    
-    const formatted = beautifyFunc(code, {
-        indent_size: 4,
-        indent_char: " ",
-        max_preserve_newlines: 2,
-        preserve_newlines: true,
-        keep_array_indentation: false,
-        break_chained_methods: false,
-        indent_scripts: "normal",
-        brace_style: "collapse",
-        space_before_conditional: true,
-        unescape_strings: false,
-        jslint_happy: true, 
-        end_with_newline: false
-    });
+    try {
+        // Sử dụng Prettier để định dạng và tự động thêm dấu ;
+        const formatted = prettier.format(code, {
+            parser: "babel",
+            plugins: prettierPlugins,
+            semi: true,          // Tự động thêm dấu chấm phẩy
+            singleQuote: false,
+            tabWidth: 4,
+            trailingComma: "none",
+            printWidth: 80
+        });
 
-    if (code !== formatted) {
-        codeEditor.value = formatted;
-        updateHighlighting();
-        addSystemMessage("✨ Code đã được sắp xếp lại.");
-        
-        // Hiệu ứng nháy nhẹ editor để báo hiệu
-        codeEditor.style.transition = 'background 0.2s';
-        codeEditor.style.background = 'rgba(255, 255, 255, 0.05)';
-        setTimeout(() => {
-            codeEditor.style.background = 'transparent';
-        }, 200);
-    } else {
-        addSystemMessage("ℹ️ Code đã ở trạng thái đẹp nhất rồi.");
+        if (code !== formatted) {
+            codeEditor.value = formatted;
+            updateHighlighting();
+            addSystemMessage("✨ Prettier: Code đã được định dạng chuẩn IDE.");
+            
+            // Hiệu ứng nháy nhẹ editor
+            codeEditor.style.transition = 'background 0.2s';
+            codeEditor.style.background = 'rgba(74, 144, 226, 0.1)';
+            setTimeout(() => {
+                codeEditor.style.background = 'transparent';
+            }, 200);
+        } else {
+            addSystemMessage("ℹ️ Code của bạn đã đạt chuẩn Prettier.");
+        }
+    } catch (err) {
+        appendToConsole(`❌ Không thể định dạng: Code của bạn đang có lỗi cú pháp.`, 'error');
     }
 }
 
