@@ -498,7 +498,17 @@ code {
 
 .header-actions {
     display: flex;
+    align-items: center;
     gap: 0.75rem;
+}
+
+.theme-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-right: -0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .actions {
