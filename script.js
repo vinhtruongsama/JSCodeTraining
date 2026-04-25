@@ -250,19 +250,6 @@ codeEditor.addEventListener('keydown', (e) => {
     }
 });
 
-btnSave.addEventListener('click', () => {
-    localStorage.setItem('js_daily_code', codeEditor.value);
-    alert('Đã lưu code thành công!');
-});
-
-btnReset.addEventListener('click', () => {
-    if (confirm('Xóa hết dữ liệu và bắt đầu lại?')) {
-        codeEditor.value = "";
-        localStorage.removeItem('js_daily_code');
-        updateHighlighting();
-    }
-});
-
 btnClearCode.addEventListener('click', () => {
     codeEditor.value = '';
     updateHighlighting();
