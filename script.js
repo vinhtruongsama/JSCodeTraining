@@ -17,6 +17,7 @@ const btnSave = document.getElementById('btn-save');
 const btnReset = document.getElementById('btn-reset');
 const btnClearCode = document.getElementById('btn-clear-code');
 const btnClearConsole = document.getElementById('btn-clear-console');
+const btnTheme = document.getElementById('btn-theme');
 
 // Layout & Resizer
 const workspace = document.querySelector('.workspace');
@@ -28,6 +29,13 @@ const btnLayoutHorizontal = document.getElementById('btn-layout-horizontal');
 
 // --- HÀM KHỞI TẠO ---
 function init() {
+    // 1. Load Theme
+    const savedTheme = localStorage.getItem('js_daily_theme') || 'light';
+    if (savedTheme === 'dark-blue') {
+        document.body.setAttribute('data-theme', 'dark-blue');
+        updateThemeIcon('dark-blue');
+    }
+
     // 2. Load code từ localStorage
     const savedCode = localStorage.getItem('js_daily_code');
     if (savedCode) {
@@ -73,6 +81,27 @@ function setLayout(mode) {
         if (savedHeight) editorSection.style.height = savedHeight;
     }
     localStorage.setItem('js_daily_layout', mode);
+}
+
+function toggleTheme() {
+    const currentTheme = document.body.getAttribute('data-theme');
+    if (currentTheme === 'dark-blue') {
+        document.body.removeAttribute('data-theme');
+        localStorage.setItem('js_daily_theme', 'light');
+        updateThemeIcon('light');
+    } else {
+        document.body.setAttribute('data-theme', 'dark-blue');
+        localStorage.setItem('js_daily_theme', 'dark-blue');
+        updateThemeIcon('dark-blue');
+    }
+}
+
+function updateThemeIcon(theme) {
+    if (theme === 'dark-blue') {
+        btnTheme.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="theme-icon-dark"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
+    } else {
+        btnTheme.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="theme-icon-light"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
+    }
 }
 
 // --- HÀM SYNTAX HIGHLIGHTING (Cải tiến - Một lần chạy duy nhất) ---
@@ -245,6 +274,8 @@ btnClearCode.addEventListener('click', () => {
 });
 
 btnClearConsole.addEventListener('click', clearConsole);
+
+btnTheme.addEventListener('click', toggleTheme);
 
 btnLayoutVertical.addEventListener('click', () => setLayout('vertical'));
 btnLayoutHorizontal.addEventListener('click', () => setLayout('horizontal'));
